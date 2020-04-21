@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import './question.dart';
-import './Answer.dart';
+import './Quiz.dart';
 
 class MyDart extends StatefulWidget {
   @override
@@ -25,6 +24,10 @@ class _MyAppState extends State<MyDart> {
       "Question": "Whats your favorite animal?",
       "Answer": ["Dog", "Cat", "Fish"]
     },
+    {
+      "Question": "Fav super hero?",
+      "Answer": ["Batman", "Spiderman", "Shinchan"]
+    },
   ];
 
   int questionIndex = 0;
@@ -38,28 +41,10 @@ class _MyAppState extends State<MyDart> {
     print(questionIndex);
   }
 
-  void _TextOnchangeHandler(String val) {
-    setState(() {
-      _testString = val;
-    });
-  }
-
   Widget RenderQuestionsAndAnswer() {
     return questionIndex >= _questions.length
         ? Text("Yay! no more questions!")
-        : Column(
-            children: <Widget>[
-              Question(_questions[questionIndex]["Question"]),
-              ...(_questions[questionIndex]["Answer"] as List<String>).map((i) {
-                return Answer(i, _AnswerQuestionHandler);
-              }),
-              Text("Realtime value is: $_testString"),
-              TextFormField(
-                onChanged: _TextOnchangeHandler,
-                decoration: InputDecoration(hintText: "Test"),
-              )
-            ],
-          );
+        : Quiz(_questions, questionIndex, _AnswerQuestionHandler);
   }
 
   @override
