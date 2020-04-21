@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:helloworld/FinalScore.dart';
 import './Quiz.dart';
+import './Score.dart';
+import './FinalScore.dart';
 
 class MyDart extends StatefulWidget {
   @override
@@ -11,40 +14,63 @@ class MyDart extends StatefulWidget {
 
 class _MyAppState extends State<MyDart> {
   void _Log({String message = ""}) {
-    debugPrint('pressed ${message}');
+    debugPrint('pressed $message');
     //Testing
   }
 
   final _questions = const [
     {
       "Question": "Whats your favorite color?",
-      "Answer": ["Red", "Blue", "White"]
+      "Answer": [
+        {"Text": "Red", "Score": 5},
+        {"Text": "Blue", "Score": 10},
+        {"Text": "White", "Score": 15}
+      ]
     },
     {
       "Question": "Whats your favorite animal?",
-      "Answer": ["Dog", "Cat", "Fish"]
+      "Answer": [
+        {"Text": "Dog", "Score": 5},
+        {"Text": "Cat", "Score": 4},
+        {"Text": "Fish", "Score": 12}
+      ]
     },
     {
       "Question": "Fav super hero?",
-      "Answer": ["Batman", "Spiderman", "Shinchan"]
+      "Answer": [
+        {"Text": "Batman", "Score": 10},
+        {"Text": "Spiderman", "Score": 11},
+        {"Text": "Shinchan", "Score": 100}
+      ]
     },
   ];
 
   int questionIndex = 0;
-
-  var _testString = "";
-
-  void _AnswerQuestionHandler() {
+  int _totalScore = 0;
+  void _AnswerQuestionHandler(int score) {
     setState(() {
       questionIndex++;
+      _totalScore += score;
     });
     print(questionIndex);
   }
 
   Widget RenderQuestionsAndAnswer() {
     return questionIndex >= _questions.length
-        ? Text("Yay! no more questions!")
-        : Quiz(_questions, questionIndex, _AnswerQuestionHandler);
+        ? FinalScore(_totalScore, this.ResetHandler)
+        : Column(
+            children: <Widget>[
+              Score(_totalScore),
+              Quiz(_questions, questionIndex, _AnswerQuestionHandler)
+            ],
+          );
+  }
+
+  void ResetHandler() {
+    setState(() {
+      questionIndex = 0;
+      _totalScore = 0;
+    });
   }
 
   @override
