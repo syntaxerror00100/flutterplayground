@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './question.dart';
+import './Answer.dart';
 
 class MyDart extends StatefulWidget {
   @override
@@ -15,14 +16,22 @@ class _MyAppState extends State<MyDart> {
     //Testing
   }
 
-  int questionIndex = 0;
-  var _questions = [
-    "Whats your favorite color?",
-    "Whats your favorite animal?"
+  final _questions = const [
+    {
+      "Question": "Whats your favorite color?",
+      "Answer": ["Red", "Blue", "White"]
+    },
+    {
+      "Question": "Whats your favorite animal?",
+      "Answer": ["Dog", "Cat", "Fish"]
+    },
   ];
+
+  int questionIndex = 0;
+
   var _testString = "";
 
-  void _AnswerQuestion() {
+  void _AnswerQuestionHandler() {
     setState(() {
       questionIndex++;
     });
@@ -33,6 +42,24 @@ class _MyAppState extends State<MyDart> {
     setState(() {
       _testString = val;
     });
+  }
+
+  Widget RenderQuestionsAndAnswer() {
+    return questionIndex >= _questions.length
+        ? Text("Yay! no more questions!")
+        : Column(
+            children: <Widget>[
+              Question(_questions[questionIndex]["Question"]),
+              ...(_questions[questionIndex]["Answer"] as List<String>).map((i) {
+                return Answer(i, _AnswerQuestionHandler);
+              }),
+              Text("Realtime value is: $_testString"),
+              TextFormField(
+                onChanged: _TextOnchangeHandler,
+                decoration: InputDecoration(hintText: "Test"),
+              )
+            ],
+          );
   }
 
   @override
@@ -52,23 +79,8 @@ class _MyAppState extends State<MyDart> {
             ),
             backgroundColor: Colors.white,
             body: Container(
-              margin: EdgeInsets.all(20),
-              child: Column(
-                children: <Widget>[
-                  Question(_questions[questionIndex]),
-                  RaisedButton(
-                      child: Text("Ansser question 1"),
-                      onPressed: _AnswerQuestion),
-                  RaisedButton(
-                      child: Text("Ansser question 2"),
-                      onPressed: _AnswerQuestion),
-                  Text("Realtime value is: $_testString"),
-                  TextFormField(
-                    onChanged: _TextOnchangeHandler,
-                    decoration: InputDecoration(hintText: "Test"),
-                  )
-                ],
-              ),
-            )));
+                alignment: Alignment.center,
+                margin: EdgeInsets.all(20),
+                child: RenderQuestionsAndAnswer())));
   }
 }
